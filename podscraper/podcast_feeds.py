@@ -6,17 +6,17 @@ from pprint import pprint
 
 
 class PodcastInfoScraper(object):
-    def __init__(self, fileName):
+    def __init__(self, fileName, podcastsFile):
         self.fileName = fileName
+        self.podcastsFile = podcastsFile
 
     def scrape(self):
         ITUNES_API = "https://itunes.apple.com/lookup?id=%s"
-        RSS_FILE = 'rss.csv'
         REGEX = r"\s*\/id([0-9]*)"
         PODCASTS = {}
 
         # Step 3: Open our previous podcasts CSV and start getting info about them 1 by 1.
-        with open(self.fileName, 'r') as f:
+        with open(self.podcastsFile, 'r') as f:
             reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             # Iterate over each URL and scrape its individual podcast URLs
             for row in reader:
@@ -40,8 +40,8 @@ class PodcastInfoScraper(object):
         f.close()
 
         # OK, now write the PODCASTS to their own CSV.
-        pprint("Opening %s" % RSS_FILE)
-        with open(RSS_FILE, 'w') as ff:
+        pprint("Opening %s" % self.fileName)
+        with open(self.fileName, 'w') as ff:
             writer = csv.writer(ff, delimiter=',', quoting=csv.QUOTE_ALL)
             for title, url in PODCASTS.items():
                 pprint("Writing %s: %s" % (title.encode('utf-8').strip(), url))
