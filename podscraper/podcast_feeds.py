@@ -9,6 +9,9 @@ class PodcastFeedScraper(object):
     def __init__(self, info, fileName):
         self.fileName = fileName
         self.info = info
+        self.session = requests.Session()
+        adapter = requests.adapters.HTTPAdapter(max_retries=10)
+        self.session.mount('https://', adapter)
 
     def scrape(self):
         ITUNES_API = "https://itunes.apple.com/lookup?id=%s"
@@ -26,7 +29,12 @@ class PodcastFeedScraper(object):
 
                 # Generate the lookup URL
                 current_url = ITUNES_API % id
-                result = requests.get(current_url, timeout=5.0)
+                try:
+                    result = self.session.get(current_url, timeout=5.0)
+                except requests.exceptions.Timeout:
+                    print("Timeout for %s" % current_url)
+                    break
+
                 if result.status_code != 200:
                     pprint("No 200 returned for URL %s" % current_url)
                     break

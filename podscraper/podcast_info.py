@@ -7,6 +7,9 @@ class PodcastInfo(object):
     def __init__(self, categories, fileName):
         self.categories = categories
         self.fileName = fileName
+        self.session = requests.Session()
+        adapter = requests.adapters.HTTPAdapter(max_retries=10)
+        self.session.mount('https://', adapter)
 
     def scrape(self):
         PODCASTS = {}
@@ -17,7 +20,13 @@ class PodcastInfo(object):
             # Iterate over each URL and scrape its individual podcast URLs
             for row in reader:
                 current_url = row[1]
-                result = requests.get(current_url, timeout=5.0)
+
+                try:
+                    result = self.session.get(current_url, timeout=5.0)
+                except requests.exceptions.Timeout:
+                    print("Timeout for %s" % current_url)
+                    break
+
                 if result.status_code != 200:
                     print("No 200 returned for URL %s" % current_url)
                     break
