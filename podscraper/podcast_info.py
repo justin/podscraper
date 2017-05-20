@@ -3,17 +3,16 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def PodcastInfo(object):
-    def __init__(self, fileName):
+class PodcastInfo(object):
+    def __init__(self, categories, fileName):
+        self.categories = categories
         self.fileName = fileName
 
     def scrape(self):
-        CATEGORIES_FILE = 'categories.csv'
-
         PODCASTS = {}
 
         # Step 2: Open our previous categories file and get all our podcasts.
-        with open(CATEGORIES_FILE, 'r') as f:
+        with open(self.categories, 'r') as f:
             reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             # Iterate over each URL and scrape its individual podcast URLs
             for row in reader:
@@ -37,7 +36,7 @@ def PodcastInfo(object):
         # OK, now write the PODCASTS to their own CSV.
         with open(self.fileName, 'w') as f:
             writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_ALL)
-            for title, url in PODCASTS.iteritems():
+            for title, url in PODCASTS.items():
                 print("Writing %s: %s" % (title, url))
                 writer.writerow([title, url])
 

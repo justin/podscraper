@@ -12,21 +12,22 @@ class Podscraper(object):
         self.config = config
 
     def categories(self, fileName):
-        path = Path(self.config.output_dir).joinpath(fileName)
+        path = Path(self.config.output_dir).joinpath(fileName).expanduser()
         scraper = CategoryScraper(path=path)
         scraper.scrape()
         print("Done fetching and writing categories.")
+        return path
 
-    def podcast_info(self, fileName):
-        # PODCASTS_FILE = 'podcasts.csv'
-        path = self.config.output_dir.joinpath(fileName)
-        scraper = PodcastInfoScraper(fileName=path)
+    def podcast_info(self, categories, fileName):
+        path = Path(self.config.output_dir).joinpath(fileName).expanduser()
+        scraper = PodcastInfo(categories=categories, fileName=path)
         scraper.scrape()
         print("Done parsing and writing RSS urls for each podcast.")
+        return path
 
-    def rss_feeds(self, fileName):
-        # RSS_FILE = 'rss.csv'
-        path = self.config.output_dir.joinpath(fileName)
-        scraper = PodcastInfo(fileName=path)
+    def rss_feeds(self, info, fileName):
+        path = Path(self.config.output_dir).joinpath(fileName).expanduser()
+        scraper = PodcastInfoScraper(info=info, fileName=path)
         scraper.scrape()
         print("Done fetching and writing out iTunes URLs for each podcast.")
+        return path

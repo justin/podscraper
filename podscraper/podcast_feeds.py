@@ -6,9 +6,9 @@ from pprint import pprint
 
 
 class PodcastInfoScraper(object):
-    def __init__(self, fileName, podcastsFile):
+    def __init__(self, info, fileName):
         self.fileName = fileName
-        self.podcastsFile = podcastsFile
+        self.info = info
 
     def scrape(self):
         ITUNES_API = "https://itunes.apple.com/lookup?id=%s"
@@ -16,7 +16,7 @@ class PodcastInfoScraper(object):
         PODCASTS = {}
 
         # Step 3: Open our previous podcasts CSV and start getting info about them 1 by 1.
-        with open(self.podcastsFile, 'r') as f:
+        with open(self.info, 'r') as f:
             reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             # Iterate over each URL and scrape its individual podcast URLs
             for row in reader:
