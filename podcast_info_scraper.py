@@ -39,7 +39,7 @@ f.close()
 pprint("Opening %s" % RSS_FILE)
 with open(RSS_FILE, 'w') as ff:
     writer = csv.writer(ff, delimiter=',', quoting=csv.QUOTE_ALL)
-    for title, url in PODCASTS.iteritems():
+    for title, url in PODCASTS.items():
         pprint("Writing %s: %s" % (title.encode('utf-8').strip(), url))
         writer.writerow([title.encode('utf-8').strip(), url.encode('utf-8').strip()])
 
