@@ -3,6 +3,7 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 
+TIMEOUT = 5.0
 FILENAME = 'categories.csv'
 ITUNES_BASE_URL = "https://itunes.apple.com/us/genre/"
 
@@ -33,11 +34,11 @@ ALPHABET = string.ascii_uppercase + '*'
 
 with open(FILENAME, 'w') as f:
     csv = csv.writer(f, delimiter=',', quoting=csv.QUOTE_ALL)
-    for key, value in CATEGORIES.iteritems():
+    for key, value in CATEGORIES.items():
         for letter in ALPHABET:
             # Determine how many pages there are.
             current_url = "%s%s&letter=%s" % (ITUNES_BASE_URL, value, letter)
-            result = requests.get(current_url, timeout=5.0)
+            result = requests.get(current_url, timeout=TIMEOUT)
             if result.status_code != 200:
                 print("No 200 returned for URL %s" % current_url)
                 break
