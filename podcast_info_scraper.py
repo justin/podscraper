@@ -21,7 +21,7 @@ with open(PODCASTS_FILE, 'r') as f:
 
         # Generate the lookup URL
         current_url = ITUNES_API % id
-        result = requests.get(current_url)
+        result = requests.get(current_url, timeout=5.0)
         if result.status_code != 200:
             pprint("No 200 returned for URL %s" % current_url)
             break

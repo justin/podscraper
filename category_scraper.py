@@ -37,7 +37,7 @@ with open(FILENAME, 'w') as f:
         for letter in ALPHABET:
             # Determine how many pages there are.
             current_url = "%s%s&letter=%s" % (ITUNES_BASE_URL, value, letter)
-            result = requests.get(current_url)
+            result = requests.get(current_url, timeout=5.0)
             if result.status_code != 200:
                 print("No 200 returned for URL %s" % current_url)
                 break
