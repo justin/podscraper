@@ -5,7 +5,7 @@ import re
 from pprint import pprint
 
 
-class PodcastInfoScraper(object):
+class PodcastFeedScraper(object):
     def __init__(self, info, fileName):
         self.fileName = fileName
         self.info = info
