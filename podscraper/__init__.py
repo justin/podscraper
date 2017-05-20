@@ -1,30 +1,32 @@
 __all__ = ['Podscraper']
 
-from pathlib2 import Path
+from pathlib import Path
+from .config import config
 from .categories import CategoryScraper
 from .podcast_feeds import PodcastInfoScraper
 from .podcast_info import PodcastInfo
 
 
 class Podscraper(object):
-    def __init__(self, root_path=None):
-        if not root_path:
-            root_path = Path.cwd()
+    def __init__(self):
+        self.config = config
 
     def categories(self, fileName):
-        # CATEGORIES_FILE = 'categories.csv'
-        scraper = CategoryScraper(fileName=fileName)
+        path = Path(self.config.output_dir).joinpath(fileName)
+        scraper = CategoryScraper(path=path)
         scraper.scrape()
         print("Done fetching and writing categories.")
 
     def podcast_info(self, fileName):
         # PODCASTS_FILE = 'podcasts.csv'
-        scraper = PodcastInfoScraper(fileName=fileName)
+        path = self.config.output_dir.joinpath(fileName)
+        scraper = PodcastInfoScraper(fileName=path)
         scraper.scrape()
         print("Done parsing and writing RSS urls for each podcast.")
 
     def rss_feeds(self, fileName):
         # RSS_FILE = 'rss.csv'
-        scraper = PodcastInfo(fileName=fileName)
+        path = self.config.output_dir.joinpath(fileName)
+        scraper = PodcastInfo(fileName=path)
         scraper.scrape()
         print("Done fetching and writing out iTunes URLs for each podcast.")

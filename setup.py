@@ -9,7 +9,10 @@ setup(
     description="Convenience scripts to scrape the iTunes podcsast directory.",
     packages=['podscraper'],
     install_requires=[
+        'beautifulsoup4',
         'click',
+        'click-didyoumean',
+        'lxml',
         'requests'
     ],
     entry_points='''

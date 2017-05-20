@@ -1,12 +1,12 @@
-import string
+from bs4 import BeautifulSoup
 import csv
 import requests
-from bs4 import BeautifulSoup
+import string
 
 
 class CategoryScraper(object):
-    def __init__(self, fileName):
-        self.fileName = fileName
+    def __init__(self, path):
+        self.path = path
 
     def scrape(self):
         TIMEOUT = 5.0
@@ -36,7 +36,11 @@ class CategoryScraper(object):
         }
 
         alphabet = string.ascii_uppercase + '*'
-        with open(self.fileName, 'w') as f:
+
+        if not self.path.parent.exists():
+            self.path.parent.mkdir(parents=True)
+
+        with open(self.path, 'w') as f:
             writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_ALL)
             for key, value in CATEGORIES.items():
                 for letter in alphabet:
