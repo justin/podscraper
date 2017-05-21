@@ -16,6 +16,7 @@ class iTunesURLScraper(object):
         PODCASTS = {}
 
         # Step 2: Open our previous categories file and get all our podcasts.
+        logging.debug("Opening categories file at path: %s", self.categories)
         with open(self.categories, 'r') as f:
             reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             # Iterate over each URL and scrape its individual podcast URLs
@@ -36,12 +37,14 @@ class iTunesURLScraper(object):
                 soup = BeautifulSoup(html_contents, "lxml")
                 # Currently each page has 3 columns of podcasts. Let's get their URLs.
                 for column in soup.select('div.column ul li a'):
-                    title = column.getText().encode('utf-8').strip()
+                    title = column.getText().strip()
                     url = column.get("href")
-                    logging.debug("Fetching %s: %s." % (title, url))
+                    logging.debug("Scraped podcast %s at URL %s." % (title, url))
                     PODCASTS[title] = url
 
         f.close()
+
+        logging.info("Time to write %i podcasts to file", len(PODCASTS))
 
         # OK, now write the PODCASTS to their own CSV.
         with open(self.fileName, 'w') as f:
