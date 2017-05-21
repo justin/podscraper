@@ -3,14 +3,19 @@ __all__ = ['cli', 'main']
 import click
 from click_didyoumean import DYMGroup
 from podscraper import Podscraper
+import logging
 
 
 @click.group(cls=DYMGroup)
+@click.option('--verbose', default=False, is_flag=True, help="Verbose logging.")
 @click.pass_context
-def cli(context):
+def cli(context, verbose):
     """A poorly written scraper for the Apple Podcast Directory"""
     scraper = Podscraper()
     context.obj = scraper
+    level = logging.DEBUG if verbose else logging.INFO
+    logger = logging.getLogger()
+    logger.setLevel(level)
 
 
 @cli.command(help='Scrape the podcast directory')

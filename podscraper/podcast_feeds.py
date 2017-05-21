@@ -3,6 +3,7 @@ import requests
 import json
 import re
 from pprint import pprint
+import logging
 
 
 class PodcastFeedScraper(object):
@@ -32,11 +33,11 @@ class PodcastFeedScraper(object):
                 try:
                     result = self.session.get(current_url, timeout=5.0)
                 except requests.exceptions.Timeout:
-                    print("Timeout for %s" % current_url)
+                    logging.error("Timeout for %s" % current_url)
                     break
 
                 if result.status_code != 200:
-                    pprint("No 200 returned for URL %s" % current_url)
+                    logging.error("No 200 returned for URL %s" % current_url)
                     break
 
                 data = json.loads(result.text)
@@ -48,11 +49,11 @@ class PodcastFeedScraper(object):
         f.close()
 
         # OK, now write the PODCASTS to their own CSV.
-        pprint("Opening %s" % self.fileName)
+        logging.debug("Opening %s" % self.fileName)
         with open(self.fileName, 'w') as ff:
             writer = csv.writer(ff, delimiter=',', quoting=csv.QUOTE_ALL)
             for title, url in PODCASTS.items():
-                pprint("Writing %s: %s" % (title.encode('utf-8').strip(), url))
+                logging.debug("Writing %s: %s" % (title.encode('utf-8').strip(), url))
                 writer.writerow([title.encode('utf-8').strip(), url.encode('utf-8').strip()])
 
         ff.close()

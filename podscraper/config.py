@@ -5,6 +5,7 @@ from pathlib import Path
 class Config(object):
     def __init__(self):
         self.output_dir = Path.cwd()
+        self.verbose = False
 
     def update(self, **kwargs):
         for key, value in sorted(kwargs.items()):

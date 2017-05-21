@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import csv
 import requests
 import string
+import logging
 
 
 class CategoryScraper(object):
@@ -50,21 +51,23 @@ class CategoryScraper(object):
                 for letter in alphabet:
                     # Determine how many pages there are.
                     current_url = "%s%s&letter=%s" % (ITUNES_BASE_URL, value, letter)
+                    logging.info("Scraping Category: %s. Letter: %s" % (value, letter))
+
                     try:
                         result = self.session.get(current_url, timeout=TIMEOUT)
                     except requests.exceptions.Timeout:
-                        print("Timeout for %s" % current_url)
+                        logging.error("Timeout for %s" % current_url)
                         break
 
                     if result.status_code != 200:
-                        print("No 200 returned for URL %s" % current_url)
+                        logging.error("No 200 returned for URL %s" % current_url)
                         break
 
                     html_contents = result.content
                     soup = BeautifulSoup(html_contents, "lxml")
                     for pagination_tag in soup.select('ul.paginate li a'):
                         page_url = pagination_tag.get("href")
-                        print("Writing URL %s" % page_url)
+                        logging.debug("Writing URL %s" % page_url)
                         writer.writerow([key, page_url])
 
         f.close()

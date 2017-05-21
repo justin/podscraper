@@ -1,9 +1,10 @@
 import csv
 import requests
 from bs4 import BeautifulSoup
+import logging
 
 
-class PodcastInfo(object):
+class iTunesURLScraper(object):
     def __init__(self, categories, fileName):
         self.categories = categories
         self.fileName = fileName
@@ -24,11 +25,11 @@ class PodcastInfo(object):
                 try:
                     result = self.session.get(current_url, timeout=5.0)
                 except requests.exceptions.Timeout:
-                    print("Timeout for %s" % current_url)
+                    logging.error("Timeout for %s" % current_url)
                     break
 
                 if result.status_code != 200:
-                    print("No 200 returned for URL %s" % current_url)
+                    logging.error("No 200 returned for URL %s" % current_url)
                     break
 
                 html_contents = result.content
@@ -37,7 +38,7 @@ class PodcastInfo(object):
                 for column in soup.select('div.column ul li a'):
                     title = column.getText().encode('utf-8').strip()
                     url = column.get("href")
-                    print("Fetching %s: %s." % (title, url))
+                    logging.debug("Fetching %s: %s." % (title, url))
                     PODCASTS[title] = url
 
         f.close()
@@ -46,7 +47,7 @@ class PodcastInfo(object):
         with open(self.fileName, 'w') as f:
             writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_ALL)
             for title, url in PODCASTS.items():
-                print("Writing %s: %s" % (title, url))
+                logging.debug("Writing %s: %s" % (title, url))
                 writer.writerow([title, url])
 
         f.close()

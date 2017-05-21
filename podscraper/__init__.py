@@ -4,7 +4,7 @@ from pathlib import Path
 from .config import config
 from .categories import CategoryScraper
 from .podcast_feeds import PodcastFeedScraper
-from .podcast_info import PodcastInfo
+from .itunes_scraper import iTunesURLScraper
 
 
 class Podscraper(object):
@@ -20,7 +20,7 @@ class Podscraper(object):
 
     def podcast_info(self, categories, fileName):
         path = Path(self.config.output_dir).joinpath(fileName).expanduser()
-        scraper = PodcastInfo(categories=categories, fileName=path)
+        scraper = iTunesURLScraper(categories=categories, fileName=path)
         scraper.scrape()
         print("Done fetching and writing out iTunes URLs for each podcast.")
         return path
