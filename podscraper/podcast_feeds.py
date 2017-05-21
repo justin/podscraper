@@ -2,7 +2,6 @@ import csv
 import requests
 import json
 import re
-from pprint import pprint
 import logging
 
 
@@ -20,6 +19,7 @@ class PodcastFeedScraper(object):
         PODCASTS = {}
 
         # Step 3: Open our previous podcasts CSV and start getting info about them 1 by 1.
+        logging.debug("Opening categories file at path: %s", self.info)
         with open(self.info, 'r') as f:
             reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             # Iterate over each URL and scrape its individual podcast URLs
@@ -43,17 +43,19 @@ class PodcastFeedScraper(object):
                 data = json.loads(result.text)
                 results = data['results']
                 for result in results:
-                    pprint("Saving off %s" % title)
+                    logging.debug("Saving off %s" % title)
                     PODCASTS[title] = result['feedUrl']  # Just need title and feed URL for now.
 
         f.close()
 
+        logging.info("Time to write %i podcasts to file", len(PODCASTS))
+
         # OK, now write the PODCASTS to their own CSV.
-        logging.debug("Opening %s" % self.fileName)
+        logging.debug("Opening %s to write." % self.fileName)
         with open(self.fileName, 'w') as ff:
             writer = csv.writer(ff, delimiter=',', quoting=csv.QUOTE_ALL)
             for title, url in PODCASTS.items():
-                logging.debug("Writing %s: %s" % (title.encode('utf-8').strip(), url))
-                writer.writerow([title.encode('utf-8').strip(), url.encode('utf-8').strip()])
+                logging.debug("Writing %s: %s" % (title.strip(), url))
+                writer.writerow([title.strip(), url.strip()])
 
         ff.close()
