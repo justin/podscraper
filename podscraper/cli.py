@@ -1,5 +1,6 @@
 __all__ = ['cli', 'main']
 
+from pathlib import Path
 import click
 from click_didyoumean import DYMGroup
 from podscraper import Podscraper
@@ -19,13 +20,14 @@ def cli(context, verbose):
 
 
 @cli.command(help='Scrape the podcast directory')
-@click.option('--output-dir', help='The directory to store CSVs')
+@click.option('--output-dir', type=click.Path(), help='The directory to store CSVs')
 @click.pass_context
-def scrape(context, **kwargs):
+def scrape(context, output_dir, **kwargs):
     scraper = context.obj
     scraper.config.update(**kwargs)
-    scraper.categories()
-    scraper.podcast_info()
+    path = Path(output_dir).expanduser()
+    scraper.categories(path)
+    scraper.podcast_info(path)
 
 
 def main():

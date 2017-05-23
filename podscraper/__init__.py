@@ -1,6 +1,5 @@
 __all__ = ['Podscraper']
 
-from pathlib import Path
 from .config import config
 from .categories import CategoryScraper
 from .itunes_scraper import iTunesURLScraper
@@ -12,14 +11,14 @@ class Podscraper(object):
 
     def __init__(self):
         self.config = config
-        self.path = Path(self.config.output_dir).expanduser()
+        self.path = self.config.output_dir.expanduser()
 
-    def categories(self):
-        scraper = CategoryScraper(path=self.path)
+    def categories(self, output_dir):
+        scraper = CategoryScraper(path=output_dir)
         scraper.scrape()
         logging.info("Done fetching and writing categories.")
 
-    def podcast_info(self):
-        scraper = iTunesURLScraper(path=self.path)
+    def podcast_info(self, output_dir):
+        scraper = iTunesURLScraper(path=output_dir)
         scraper.scrape()
         logging.info("Done fetching and writing out RSS URLs for each podcast.")
