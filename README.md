@@ -1,6 +1,6 @@
 # podscraper
 
-A small, probably poorly-written, script to grab the top podcasts from the iTunes directory.
+A small, probably poorly-written script to grab the top podcasts from the iTunes directory.
 
 ## Installation
 
