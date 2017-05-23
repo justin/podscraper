@@ -12,9 +12,7 @@ class Podscraper(object):
 
     def __init__(self):
         self.config = config
-        print(self.config)
         self.path = Path(self.config.output_dir).expanduser()
-        print(self.path)
 
     def categories(self):
         scraper = CategoryScraper(path=self.path)
