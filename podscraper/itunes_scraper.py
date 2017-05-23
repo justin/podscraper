@@ -6,6 +6,8 @@ import logging
 
 
 class iTunesURLScraper(object):
+    """Initialize a new instance of iTunesURLScraper"""
+
     def __init__(self, path):
         self.path = path
         self.categories = self.path.joinpath("categories").expanduser()
@@ -14,6 +16,8 @@ class iTunesURLScraper(object):
         self.session.mount('https://', adapter)
 
     def scrape(self):
+        """Go through the process of iterating a category csv and writing out the resulting
+        RSS info."""
         # Step 2: Open our previous categories files and get all our podcasts.
         for path in self.categories.iterdir():
             if path.suffix == '.csv':
@@ -21,6 +25,7 @@ class iTunesURLScraper(object):
                 self._write(path.name, results)
 
     def _scrape(self, path):
+        """Scrap the passed in CSV file at path and query the iTunes API for its RSS feed."""
         REGEX = r"\s*\/id([0-9]*)"
         ITUNES_API = "https://itunes.apple.com/lookup?id=%s"
         podcasts = {}
@@ -60,6 +65,7 @@ class iTunesURLScraper(object):
         return podcasts
 
     def _write(self, fileName, results):
+        """Write a CSV file out with the passed in results."""
         logging.info("Time to write %i podcasts to file", len(results))
 
         # OK, now write the PODCASTS to their own CSV in the "itunes" directory

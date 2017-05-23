@@ -5,6 +5,8 @@ import logging
 
 
 class CategoryScraper(object):
+    """Initialize a new instance of CategoryScraper"""
+
     def __init__(self, path):
         self.path = path.joinpath("categories")
         self.session = requests.Session()
@@ -12,6 +14,7 @@ class CategoryScraper(object):
         self.session.mount('https://', adapter)
 
     def scrape(self):
+        """Scrap the category page URLs to get a listing of iTunes web addresses"""
         URLs = []
         TIMEOUT = 5.0
         ITUNES_BASE_URL = "https://itunes.apple.com/us/genre/"
@@ -66,6 +69,7 @@ class CategoryScraper(object):
             self._writeCategory(category, URLs)
 
     def _writeCategory(self, category, urls):
+        """Write the passed in List of urls to a CSV file named category."""
         filePath = self.path.joinpath("%s.csv" % category).expanduser()
         with open(filePath, 'w') as f:
             writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_ALL)

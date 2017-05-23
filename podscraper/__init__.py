@@ -8,6 +8,8 @@ import logging
 
 
 class Podscraper(object):
+    """Initialize a new instance of Podscraper"""
+
     def __init__(self):
         self.config = config
         print(self.config)
