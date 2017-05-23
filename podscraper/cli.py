@@ -24,9 +24,8 @@ def cli(context, verbose):
 def scrape(context, **kwargs):
     scraper = context.obj
     scraper.config.update(**kwargs)
-    categories = scraper.categories(fileName="categories.csv")
-    info = scraper.podcast_info(categories=categories, fileName="podcasts.csv")
-    scraper.rss_feeds(info=info, fileName="rss.csv")
+    scraper.categories()
+    scraper.podcast_info()
 
 
 def main():

@@ -1,27 +1,42 @@
 import csv
 import requests
-from bs4 import BeautifulSoup
+import json
+import re
 import logging
 
 
 class iTunesURLScraper(object):
-    def __init__(self, categories, fileName):
-        self.categories = categories
-        self.fileName = fileName
+    def __init__(self, path):
+        self.path = path
+        self.categories = self.path.joinpath("categories").expanduser()
         self.session = requests.Session()
         adapter = requests.adapters.HTTPAdapter(max_retries=10)
         self.session.mount('https://', adapter)
 
     def scrape(self):
-        PODCASTS = {}
+        # Step 2: Open our previous categories files and get all our podcasts.
+        for path in self.categories.iterdir():
+            if path.suffix == '.csv':
+                results = self._scrape(path)
+                self._write(path.name, results)
 
-        # Step 2: Open our previous categories file and get all our podcasts.
-        logging.debug("Opening categories file at path: %s", self.categories)
-        with open(self.categories, 'r') as f:
+    def _scrape(self, path):
+        REGEX = r"\s*\/id([0-9]*)"
+        ITUNES_API = "https://itunes.apple.com/lookup?id=%s"
+        podcasts = {}
+        logging.info("Opening categories file at path: %s", path)
+        with open(path, 'r') as f:
             reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
+            rows = list(reader)
             # Iterate over each URL and scrape its individual podcast URLs
-            for row in reader:
-                current_url = row[1]
+            logging.info("Reading %i rows", len(rows))
+            for row in rows:
+                itunes_url = row[0]
+                id = re.search(REGEX, itunes_url).group(1)
+
+                # Generate the lookup URL
+                current_url = ITUNES_API % id
+                logging.info("Requesting %s" % current_url)
 
                 try:
                     result = self.session.get(current_url, timeout=5.0)
@@ -33,23 +48,28 @@ class iTunesURLScraper(object):
                     logging.error("No 200 returned for URL %s" % current_url)
                     break
 
-                html_contents = result.content
-                soup = BeautifulSoup(html_contents, "lxml")
-                # Currently each page has 3 columns of podcasts. Let's get their URLs.
-                for column in soup.select('div.column ul li a'):
-                    title = column.getText().strip()
-                    url = column.get("href")
-                    logging.debug("Scraped podcast %s at URL %s." % (title, url))
-                    PODCASTS[title] = url
+                data = json.loads(result.text)
+                results = data['results']
+                for result in results:
+                    # Just need title and feed URL for now.
+                    title = result["collectionName"]
+                    podcasts[title] = result['feedUrl']
 
         f.close()
 
-        logging.info("Time to write %i podcasts to file", len(PODCASTS))
+        return podcasts
 
-        # OK, now write the PODCASTS to their own CSV.
-        with open(self.fileName, 'w') as f:
+    def _write(self, fileName, results):
+        logging.info("Time to write %i podcasts to file", len(results))
+
+        # OK, now write the PODCASTS to their own CSV in the "itunes" directory
+        itunes_dir = self.path.joinpath("itunes")
+        if not itunes_dir.exists():
+            itunes_dir.mkdir(parents=True)
+
+        with open(itunes_dir.joinpath(fileName).expanduser(), 'w') as f:
             writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_ALL)
-            for title, url in PODCASTS.items():
+            for title, url in results.items():
                 logging.debug("Writing %s: %s" % (title, url))
                 writer.writerow([title, url])
 
