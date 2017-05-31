@@ -5,7 +5,7 @@ A small, probably poorly-written script to grab the top podcasts from the iTunes
 ## Installation
 
 ```
-pip3 install punic
+pip3 install podscraper
 ```
 
 It may work with Python 2.6, but I haven't tested it.
