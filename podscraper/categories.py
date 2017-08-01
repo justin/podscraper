@@ -15,7 +15,6 @@ class CategoryScraper(object):
 
     def scrape(self):
         """Scrap the category page URLs to get a listing of iTunes web addresses"""
-        URLs = []
         TIMEOUT = 5.0
         ITUNES_BASE_URL = "https://itunes.apple.com/us/genre/"
 
@@ -62,11 +61,12 @@ class CategoryScraper(object):
 
             html_contents = result.content
             soup = BeautifulSoup(html_contents, "lxml")
+            urls = []
             for pagination_tag in soup.select('div.column ul li a'):
                 page_url = pagination_tag.get("href")
-                URLs.append(page_url)
+                urls.append(page_url)
 
-            self._writeCategory(category, URLs)
+            self._writeCategory(category, urls)
 
     def _writeCategory(self, category, urls):
         """Write the passed in List of urls to a CSV file named category."""
