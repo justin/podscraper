@@ -12,8 +12,6 @@ setup(
         'beautifulsoup4',
         'click',
         'click-didyoumean',
-        'csv',
-        'logging',
         'lxml',
         'requests'
     ],
