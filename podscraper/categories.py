@@ -23,22 +23,21 @@ class CategoryScraper(object):
             'business': "podcasts-business/id1321",
             'comedy': "podcasts-comedy/id1303",
             'education': "podcasts-education/id1304",
-            'games_and_hobbies': "podcasts-games-hobbies/id1323",
-            'government_and_organizations':
-                "podcasts-government-organizations/id1325",
-            'health': "podcasts-health/id1307",
+            'fiction': "podcasts-fiction/id1483",
+            'government': "podcasts-government/id1511",
+            'health_and_fitness': "podcasts-health-fitness/id1512",
+            'history': "podcasts-history/id1487",
             'kids_and_family': "podcasts-kids-family/id1305",
+            'leisure': "podcasts-leisure/id1502",
             'music': "podcasts-music/id1310",
-            'news_and_politics': "podcasts-news-politics/id1311",
-            'religion_and_spirituality':
-                "podcasts-religion-spirituality/id1314",
-            'science_and_medicine':
-                "podcasts-science-medicine/id1315",
+            'news': "podcasts-news/id1489",
+            'religion_and_spirituality': "podcasts-religion-spirituality/id1314",
+            'science': "podcasts-science/id1533",
             'society_and_culture': "podcasts-society-culture/id1324",
-            'sports_and_recreation':
-                "podcasts-sports-recreation/id1316",
+            'sports': "podcasts-sports/id1545",
             'technology': "podcasts-tv-film/id1309",
-            'tv_and_film': "podcasts-technology/id1318"
+            'tv_and_film': "podcasts-technology/id1318",
+            'true_crime': "podcasts-true-crime/id1488"
         }
 
         # Create the 'categories' directory if it doesn't exist.
